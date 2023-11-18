@@ -4,7 +4,6 @@ const collection = new Map();
 const config = require('./config.json');
 require('colors');
 
-// Initialzing Client
 const client = new Client({
     intents: [
         GatewayIntentBits.MessageContent,
@@ -21,7 +20,6 @@ const client = new Client({
     },
 });
 
-// Crash - Prevention
 process.on('unhandledRejection', async (err, cause) => {
     console.log(`[Uncaught Rejection]: ${err}`.bold.red);
     console.log(cause);
@@ -44,7 +42,7 @@ const configuration = new Configuration({
 });
 
 let prompt = [
-    {"role": "system", "content": `Et oui jami`},
+    {"role": "system", "content": `I am a friendly discord bot working for members`},
 ];// You can modify prompt for customized responses.
 
 client.on('messageCreate', async message => {
@@ -64,7 +62,7 @@ client.on('messageCreate', async message => {
         if(!message.channel.permissionsFor(client.user.id).has(PermissionsBitField.Flags.SendMessages)) return;
         if(message.type != 0 || ![0 , 5, 10, 11, 12].includes(message.channel.type)) return; // Ignores Replies
 
-        message.channel.sendTyping().catch(e => {null}); //Bot is typing..
+        message.channel.sendTyping().catch(e => {null});
 
         if(!collection.has(message.author.id)){
             collection.set(message.author.id, []);
@@ -98,9 +96,9 @@ client.on('messageCreate', async message => {
         const openai = new OpenAIApi(configuration);
         var err = false;
         const response = await openai.createChatCompletion({
-            model: 'gpt-3.5-turbo',
+            model: 'gpt-3.5-turbo', // That can be changed with other models (https://platform.openai.com/docs/models)
             messages: b,
-            temperature: 0.9,
+            temperature: 0.9, // i suggest not putting it to 1 as it can get bad
             max_tokens: 1500,
             top_p: 1,
             frequency_penalty: 0,
@@ -132,5 +130,5 @@ client.on('messageCreate', async message => {
     }
 });
 
-// Logging in Discord
+// Logging in Discord (/.env file)
 client.login(process.env.token);
